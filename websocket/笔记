@@ -1,0 +1,226 @@
+websocket：伴随着html5出现的一门新技术，和http请求不同。看HTML5的websocket API
+web端的socket连接，允许浏览器和服务器相互发送消息，建立持久的连接。本质是TCP连接。
+最简单的websocket程序：
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>websocket</title>
+</head>
+<body>
+	<h1>Echo Test</h1>
+	<input type="text" id="sendTxt">
+	<button id="sendBtn">发送</button>
+	<div id="recv"></div>
+	<script type = "text/javascript">
+		var websocket = new WebSocket("ws://echo.websocket.org/");
+		websocket.onopen = function() {
+			console.log('websocket open');
+			document.getElementById("recv").innerHTML = "Connected";
+		}
+		websocket.onclose = function() {
+			console.log('websocket closed');
+		}
+		websocket.onmessage = function(e) {
+			console.log(e.data);
+			document.getElementById("recv").innerHTML = e.data;
+		}
+		document.getElementById("sendBtn").onclick = function() {
+			var txt = document.getElementById("sendTxt").value;
+			websocket.send(txt);
+		}
+	</script>
+</body>
+</html>
+用nodejs 搭建自己的websocket sever
+npm install nodejs-websocket
+服务器端使用nodejs-websocket实现
+var ws = require("nodejs-websocket")
+ 
+var PORT = 3000
+// Scream server example: "hi" -> "HI!!!" 
+var server = ws.createServer(function (conn) {
+    console.log("New connection")
+    conn.on("text", function (str) {
+        console.log("Received "+str)
+        conn.sendText(str)
+    })
+    conn.on("close", function (code, reason) {
+        console.log("Connection closed")
+    })
+    conn.on("error", function (err) {
+        console.log("handle error")
+        console.log(err)
+    })
+}).listen(PORT)
+
+console.log("websocket server listening on port " + PORT)
+
+实现一个简单的聊天室
+//index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>websocket</title>
+</head>
+<body>
+	<h1>Chat Room</h1>
+	<input type="text" id="sendTxt">
+	<button id="sendBtn">发送</button>
+	
+	<script type = "text/javascript">
+		var websocket = new WebSocket("ws://localhost:3000");
+		function showMessage(str,type){
+			var div = document.createElement('div');
+			div.innerHTML = str;
+			if(type == "enter"){
+				div.style.color = "blue";
+			}else if(type == "leave"){
+				div.style.color = "red"
+			}
+			document.body.appendChild(div);
+		}
+		websocket.onopen = function() {
+			console.log('websocket open');
+			document.getElementById("sendBtn").onclick = function() {
+				var txt = document.getElementById("sendTxt").value;
+				if(txt){
+					websocket.send(txt);
+				}
+			}
+		}
+		websocket.onclose = function() {
+			console.log('websocket closed');
+		}
+		websocket.onmessage = function(e) {
+			console.log(e.data);
+			var mes = JSON.parse(e.data)
+			showMessage(mes.data,mes.type);
+		}
+		
+	</script>
+</body>
+</html>
+//wsServer.js
+var ws = require("nodejs-websocket")
+ 
+var PORT = 3000
+
+var clientCount = 0
+
+// Scream server example: "hi" -> "HI!!!" 
+var server = ws.createServer(function (conn) {
+    console.log("New connection")
+    clientCount++
+    conn.nickname = 'user' + clientCount
+    var mes = {}
+    mes.type = "enter"
+    mes.data = conn.nickname + ' comes in'
+    broadcast(JSON.stringify(mes))
+    
+    conn.on("text", function (str) {
+        console.log("Received "+str)
+        var mes = {}
+        mes.type = "message"
+        mes.data = conn.nickname + ' says: ' str
+        broadcast(JSON.stringify(mes))
+    })
+    conn.on("close", function (code, reason) {
+        console.log("Connection closed")
+        var mes = {}
+        mes.type = "leave"
+        mes.data = conn.nickname + ' left'
+        broadcast(JSON.stringify(mes))
+    })
+    conn.on("error", function (err) {
+        console.log("handle error")
+        console.log(err)
+    })
+}).listen(PORT)
+
+console.log("websocket server listening on port " + PORT)
+
+function broadcast(str) {
+    server.connections.forEach(function(connection) {
+        connection.sendText(str)
+    })
+}
+
+socket.io:直接就可以输出一个对象，可以自定义事件 用socket.io实现websocket
+npm install socket.io
+socket.io改造聊天功能：
+//index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>websocket</title>
+	<script type = "text/javascript" src = "socket.io.js"></script>
+</head>
+<body>
+	<h1>Chat Room</h1>
+	<input type="text" id="sendTxt">
+	<button id="sendBtn">发送</button>
+	<div id="recv"></div>
+	<script type = "text/javascript">
+		var socket = io("ws://localhost:3000");
+		function showMessage(str,type){
+			var div = document.createElement('div');
+			div.innerHTML = str;
+			if(type == "enter"){
+				div.style.color = "blue";
+			}else if(type == "leave"){
+				div.style.color = "red"
+			}
+			document.body.appendChild(div);
+		}
+		
+		document.getElementById("sendBtn").onclick = function() {
+			var txt = document.getElementById("sendTxt").value;
+			if(txt){
+				socket.emit('message', txt);
+			}
+		}
+		
+		socket.on('enter', function(data){
+			showMessage(data,'enter');
+		})
+
+		socket.on('message', function(data){
+			showMessage(data,'message');
+		})
+
+		socket.on('leave', function(data){
+			showMessage(data,'leave');
+		})
+		
+	</script>
+</body>
+</html>
+
+//wsServer.js
+var app = require("http").createServer()
+var io = require('socket.io')(app)
+ 
+var PORT = 3000
+
+var clientCount = 0
+
+app.listen(PORT)
+
+io.on('connection',function(socket) {
+    clientCount++
+    socket.nickname = 'user' + clientCount
+    io.emit('enter', socket.nickname + ' comes in')
+
+    socket.on('message', function(str) {
+        io.emit('message', socket.nickname + ' says: ' + str)
+    })
+
+    socket.on('disconnect', function() {
+        io.emit('leave', socket.nickname + ' left')
+    })
+})
+
+console.log("websocket server listening on port " + PORT)
