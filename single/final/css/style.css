@@ -1,12 +1,13 @@
 .square {
-	width: 600px;
+	width: 400px;
 	height: 600px;
-	padding-left: 100px;
+	padding-left: 200px;
 	float: left;
 }
 .tips {
 	height: 50px
 	font: normal normal 18px/50px "微软雅黑";
+	text-align: center;
 }
 .title {
 	font-size: 30px;
