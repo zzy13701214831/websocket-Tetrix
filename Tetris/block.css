@@ -1,0 +1,208 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0
+}
+
+#container {
+    border: 10px solid blue;
+    background-color: #000;
+    border-top: 0;
+    width: 400px;
+    height: 600px
+}
+
+.matrix {
+    position: absolute
+}
+
+.shape {
+    position: absolute;
+    top: 0;
+    left: 0
+}
+
+.shape>div,
+.matrix {
+    border: 5px solid green;
+    position: absolute;
+    background: #d4d4d4;
+    width: 15px;
+    height: 15px
+}
+
+.shape-I {
+    top: 25px;
+    left: 10px
+}
+
+.shape-I div {
+    top: 0;
+    left: 0
+}
+
+.shape-I div+div {
+    top: 0;
+    left: 25px
+}
+
+.shape-I div+div+div {
+    top: 0;
+    left: 50px
+}
+
+.shape-I div+div+div+div {
+    top: 0;
+    left: 75px
+}
+
+.shape-L {
+    top: 0;
+    left: 110px
+}
+
+.shape-L div {
+    top: 0;
+    left: 0
+}
+
+.shape-L div+div {
+    top: 25px;
+    left: 0
+}
+
+.shape-L div+div+div {
+    top: 50px;
+    left: 0
+}
+
+.shape-L div+div+div+div {
+    top: 50px;
+    left: 25px
+}
+
+.shape-O {
+    top: 0;
+    left: 160px
+}
+
+.shape-O div {
+    top: 0;
+    left: 0
+}
+
+.shape-O div+div {
+    top: 25px;
+    left: 0
+}
+
+.shape-O div+div+div {
+    top: 25px;
+    left: 25px
+}
+
+.shape-O div+div+div+div {
+    top: 0;
+    left: 25px
+}
+
+.shape-S {
+    top: 0;
+    left: 210px
+}
+
+.shape-S div {
+    top: 0;
+    left: 0
+}
+
+.shape-S div+div {
+    top: 25px;
+    left: 0
+}
+
+.shape-S div+div+div {
+    top: 25px;
+    left: 25px
+}
+
+.shape-S div+div+div+div {
+    top: 50px;
+    left: 25px
+}
+
+.shape-S-reverse {
+    top: 0;
+    left: 260px
+}
+
+.shape-S-reverse div {
+    top: 0;
+    left: 25px
+}
+
+.shape-S-reverse div+div {
+    top: 25px;
+    left: 25px
+}
+
+.shape-S-reverse div+div+div {
+    top: 25px;
+    left: 0
+}
+
+.shape-S-reverse div+div+div+div {
+    top: 50px;
+    left: 0
+}
+
+.shape-L-reverse {
+    top: 0;
+    left: 310px
+}
+
+.shape-L-reverse div {
+    top: 0;
+    left: 25px
+}
+
+.shape-L-reverse div+div {
+    top: 25px;
+    left: 25px
+}
+
+.shape-L-reverse div+div+div {
+    top: 50px;
+    left: 25px
+}
+
+.shape-L-reverse div+div+div+div {
+    top: 50px;
+    left: 0
+}
+
+.shape-T {
+    top: 0;
+    left: 360px
+}
+
+.shape-T div {
+    top: 0;
+    left: 25px
+}
+
+.shape-T div+div {
+    top: 25px;
+    left: 25px
+}
+
+.shape-T div+div+div {
+    top: 50px;
+    left: 25px
+}
+
+.shape-T div+div+div+div {
+    top: 25px;
+    left: 0
+}
